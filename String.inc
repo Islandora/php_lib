@@ -58,6 +58,46 @@ function cast_string_to_boolean($string, array $matches = NULL, $case_sensitive 
 }
 
 /**
+ * Attempts to cast the given string to a particular type value based on matched values.
+ * 
+ * @param string $string
+ *   The string to cast to a type.
+ * 
+ * @return mixed
+ *   If the string repersents a literal type than convert to that type, other wise return the given string intact.
+ */
+function cast_string_to_type($string) {
+  if (is_string($string)) {
+    $matches = array('true' => TRUE, 'false' => FALSE, 'null' => NULL);
+    foreach ($matches as $match => $value) {
+      if (strcasecmp($string, $match) === 0) {
+        return $value;
+      }
+    }
+  }
+  return $string;
+}
+
+/**
+ * Attempts to cast the given type to a string.
+ * 
+ * @param string $string
+ *   The string to cast to a type.
+ * 
+ * @return mixed
+ *   If the string repersents a literal type than convert to that type, other wise return the given string intact.
+ */
+function cast_type_to_string($type) {
+  if (is_bool($type)) {
+    $type = $type ? 'TRUE' : 'FALSE';
+  }
+  if (!isset($type)) {
+    $type = NULL;
+  }
+  return (string) $type;
+}
+
+/**
  * Appends a value to each new line in the given string.
  * 
  * @param string $string
