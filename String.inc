@@ -92,7 +92,7 @@ function cast_type_to_string($type) {
     $type = $type ? 'TRUE' : 'FALSE';
   }
   if (!isset($type)) {
-    $type = NULL;
+    $type = 'NULL';
   }
   return (string) $type;
 }
