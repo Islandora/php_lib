@@ -13,3 +13,4 @@ module_load_include('inc', 'php_lib', 'DOMHelpers');
 module_load_include('inc', 'php_lib', 'ReadOnlyMembers');
 module_load_include('inc', 'php_lib', 'ReflectionHelpers');
 module_load_include('inc', 'php_lib', 'String');
+module_load_include('inc', 'php_lib', 'File');
