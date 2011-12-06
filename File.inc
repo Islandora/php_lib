@@ -326,7 +326,6 @@ function file_unget_csv($handle, $length = 0, $delimiter = ',', $expected_fields
   // Trim the last new line as it is meant to delimit the end of the row.
   $last_index = count($fields) - 1;
   $fields[$last_index] = trim($fields[$last_index]);
-  $pos = ftell($handle);
   return $fields;
 }
 
