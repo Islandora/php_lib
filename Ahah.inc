@@ -40,10 +40,17 @@ class Ahah {
     $form_build_id = $_REQUEST['form_build_id'];
     $form_state = array('storage' => NULL, 'submitted' => FALSE, 'post' => $_POST);
     if (!$form = form_get_cache($form_build_id, $form_state)) {
+      if ($form_id = $form_state['post']['form_id']) {
+        $form = drupal_retrieve_form($form_id, $form_state);
+      }
+    }
+    if (!$form) {
       self::cancelResponse();
     }
     module_load_include('inc', 'node', 'node.pages'); // Need for using AHAH in conjunction with Node API.
-    $form_id = array_shift($form['#parameters']);
+    if(!$form_id) {
+      $form_id = array_shift($form['#parameters']);
+    }
     return array($form_id, $form_build_id, &$form, &$form_state);
   }
 
