@@ -515,7 +515,7 @@ function fungets($handle, $length = 0) {
   $offset = $pos - $start; // We want to count the current character in the offset.
   $length = ($length > 0) ? min($length - 1, $offset) : $offset; // For consistency with fgets we treat length as starting from 1 rather than 0.
   $diff = $offset - $length;
-  $s = substr($s, $offset - $length, $length); // Take out the chunk we are interested in.
+  $s = drupal_substr($s, $offset - $length, $length); // Take out the chunk we are interested in.
   fseek($handle, $pos - $length - 1, SEEK_SET); // Move our pointer to character preceding the amount read out.
   return $s;
 }

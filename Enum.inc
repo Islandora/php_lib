@@ -47,7 +47,7 @@ abstract class Enum {
         throw new InvalidArgumentException("No value provided, and no __default value defined for the Class '{$class_name}'.");
       }
     }
-    else if (array_search($value, $consts) !== FALSE) {
+    elseif (array_search($value, $consts) !== FALSE) {
       $this->val = $value;
     }
     else {

@@ -2,7 +2,7 @@
 
 /**
  * @file
- * 
+ *
  * Unit Tests.
  */
 
@@ -13,7 +13,7 @@ class PHPLib_Array_TestCase extends DrupalUnitTestCase {
 
   /**
    * Get Test info.
-   * 
+   *
    * @return array
    *   Properties that are displayed in the test selection form.
    */
@@ -26,7 +26,7 @@ class PHPLib_Array_TestCase extends DrupalUnitTestCase {
   }
 
   /**
-   * setUp() performs any pre-requisite tasks that need to happen. 
+   * setUp() performs any pre-requisite tasks that need to happen.
    */
   public function setUp() {
     // Enable any modules required for the test.

@@ -193,7 +193,7 @@ class _XMLDocument extends DOMDocument {
    * @param int $options
    *   Bitwise OR of the libxml option constants.
    */
-  public function load($filename, $options = null) {
+  public function load($filename, $options = NULL) {
     $ret = parent::load($filename, $options);
     if ($ret) {
       $this->xpath = new DOMXPath($this);
@@ -213,7 +213,7 @@ class _XMLDocument extends DOMDocument {
    * @return
    * Returns TRUE on success or FALSE on failure. If called statically, returns a DOMDocument or FALSE on failure.
    */
-  public function loadXML($source, $options = null) {
+  public function loadXML($source, $options = NULL) {
     $ret = parent::loadXML($source, $options);
     if ($ret) {
       $this->xpath = new DOMXPath($this);

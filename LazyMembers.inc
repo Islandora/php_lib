@@ -45,7 +45,7 @@ class LazyMember {
     $this->function = $function;
     $this->parameters = $parameters;
     $this->value = NULL;
-    $this->dirty = true;
+    $this->dirty = TRUE;
   }
 
   /**
@@ -54,7 +54,7 @@ class LazyMember {
   public function __invoke() {
     if ($this->dirty) {
       $this->value = call_user_func($this->function, $this->parameters);
-      $this->dirty = false;
+      $this->dirty = FALSE;
     }
     return $this->value;
   }
@@ -99,7 +99,7 @@ class LazyMembers extends Members {
    */
   public function setDirty($name) {
     if ($this->isLazy($name)) {
-      $this->values[$name]->dirty = true;
+      $this->values[$name]->dirty = TRUE;
     }
   }
 
@@ -115,7 +115,7 @@ class LazyMembers extends Members {
     if ($this->isLazy($name)) {
       return $this->values[$name]();
     }
-    else if ($this->exists($name)) {
+    elseif ($this->exists($name)) {
       return $this->values[$name];
     }
     return NULL;

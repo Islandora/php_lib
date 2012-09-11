@@ -85,7 +85,7 @@ class ReadOnlyProtectedMembers {
         $this->add($key, $value);
       }
     }
-    else if (is_string($name)) {
+    elseif (is_string($name)) {
       array_push($this->members, $name);
       $this->values[$name] = $value;
     }
