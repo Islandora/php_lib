@@ -110,4 +110,12 @@ class Ahah {
     ));
   }
 
+  /**
+   * Loads the needed ahah.js file so that Drupal.settings
+   * are updated when AHAH elements with AHAH callbacks are created
+   */
+  public static function get_ahah_js() {
+    drupal_add_js(drupal_get_path('module', 'php_lib') . '/js/ahah/ahah.js', 'footer');  
+  }
+
 }
