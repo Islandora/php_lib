@@ -98,11 +98,18 @@ class Ahah {
     $javascript = drupal_add_js(NULL, NULL, 'header');
     $settings = call_user_func_array('array_merge_recursive', $javascript['setting']);
     unset($settings['ahah']['']);
-    drupal_json(array(
+   
+    // We forego the usuage of drupal_json as this sets a header which causes
+    // IE to prompt for downloads. Instead we use the header set in 
+    // _drupal_bootstrup_full which sets the Content Type of 'text/html'.
+    // Relevant threads: http://drupal.org/node/952220, 
+    // http://drupal.org/node/1086098
+    $response = array(
       'status' => TRUE,
       'data' => $data,
       'settings' => $settings,
-    ));
+    );
+    echo drupal_to_js($response);    
   }
 
  /**
