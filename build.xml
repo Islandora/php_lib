@@ -77,8 +77,8 @@
   </target>
 
   <target name="test">
-    <exec executable="drush">
-      <arg line="test-run --xml=${basedir}/build/test 'PHP Lib'" />
+    <exec executable="bash">
+        <arg line='-c "php ../../../../scripts/run-tests.sh --xml ${basedir}/build/test PHP\ Lib"' />
     </exec>
   </target>
 
