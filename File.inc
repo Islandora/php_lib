@@ -2,19 +2,18 @@
 
 /**
  * @file
- *
  * Helper functions for file processing.
  *
  * Notes:
- *  Beware of fseek() you can move it to the end of the file or beyond the end of the file, and feof() won't return the
- *  correct value as it depends on attempting to 'read' passed the end of the file to work.
- *
+ *  Beware of fseek() you can move it to the end of the file or beyond the
+ *  end of the file, and feof() won't return the correct value as it depends
+ *  on attempting to 'read' passed the end of the file to work.
  *
  * End of line (EOL) sequences
  *  Windows end of line sequence:  \r\n
  *  Unix end of line sequence: \n
  *  Mac end of line sequence: \r
- * 
+ *
  * The class implementations are correct but very very slow
  */
 
@@ -31,8 +30,7 @@ class File {
   protected $handle;
 
   /**
-   * Frequently we need to save the current pointer do some processing then return to the old pointer positon this
-   * instance variable a LIFO used to achieve that.
+   * Frequently we need to save the current pointer do some processing then return to the old pointer positon this instance variable a LIFO used to achieve that.
    *
    * @var array
    */
@@ -40,12 +38,12 @@ class File {
 
   /**
    * Creates a File instance.
-   * 
+   *
    * Note that the $handle transfers ownership to this class, and should not be closed outside of this class.
    *
    * @param resource $handle
    *   A valid file handle as returned by fopen().
-   * 
+   *
    * @throws InvalidArgumentException
    *   If the $handle provided is not vaild.
    */
@@ -69,8 +67,9 @@ class File {
    * Gets dynamic variables for this class.
    *
    * "pos":
-   *   The position of the file pointer referenced by handle as an integer; i.e., its offset
-   *   into the file stream. If an error occurs, returns FALSE.
+   *   The position of the file pointer referenced by handle as an integer;
+   *   i.e., its offset into the file stream. If an error occurs, returns
+   *   FALSE.
    *
    * @param string $name
    */
@@ -78,6 +77,7 @@ class File {
     switch ($name) {
       case 'pos':
         return ftell($this->handle);
+
       case 'size':
         $stats = $this->stat();
         return $stats['size'];
@@ -90,27 +90,31 @@ class File {
 
   /**
    * Passes calls though to PHP filesystem functions using the file handle.
-   * 
+   *
    * @param string $name
    *   The function name.
-   * @param array $arguments 
+   * @param array $arguments
    *   The arguments to the given function.
-   * 
+   *
    * @return mixed
-   *   Depends on the function called @see the PHP file system docs http://uk.php.net/manual/en/ref.filesystem.php.
+   *   Depends on the function called @see the PHP file
+   *   system docs http://uk.php.net/manual/en/ref.filesystem.php.
    */
   public function __call($name, $arguments) {
     $functions = array('rewind', 'fgetc', 'fgets', 'fstat');
+    // Alias for PHP filesystem functions, for cleaner looks.
     $aliases = array(
       'getc' => 'fgetc',
       'gets' => 'fgets',
       'read' => 'fread',
       'stat' => 'fstat',
-    ); // Alias for PHP filesystem functions, for cleaner looks.
-    $exists = array_search($name, $functions) !== FALSE; // Function exists
+    );
+    // Function exists.
+    $exists = array_search($name, $functions) !== FALSE;
     $aliased = array_key_exists($name, $aliases);
     if ($exists || $aliased) {
-      array_unshift($arguments, $this->handle); // Handle is always the first parameter.
+      // Handle is always the first parameter.
+      array_unshift($arguments, $this->handle);
       return call_user_func_array($aliased ? $aliases[$name] : $name, $arguments);
     }
     throw new InvalidArgumentException("$name isn't a method of " . __CLASS__);
@@ -123,19 +127,20 @@ class File {
    *   An offset in bytes to move the pointer from the specified $whence value.
    *   Can be positve or negative.
    * @param int $whence
-   *   The context in which to evaluate the given $offset. The excepted values are:
+   *   The context in which to evaluate the given $offset, excepted values are:
    *    SEEK_SET - Set position equal to offset bytes.
    *    SEEK_CUR - Set position to current location plus offset.
    *    SEEK_END - Set position to end-of-file plus offset.
-   * @param boolean $eof
+   * @param bool $eof
    *   Allow this function to seek passed the EOF.
-   * 
-   * @return boolean
+   *
+   * @return bool
    *   TRUE if the seek succeeded, FALSE otherwise.
    */
   public function seek($offset = NULL, $whence = SEEK_SET, $eof = TRUE) {
     $ret = fseek($this->handle, $offset, $whence) == 0;
-    if (!$eof && $this->EOF()) { // Not passed EOF
+    // Not passed EOF.
+    if (!$eof && $this->EOF()) {
       fseek($this->handle, 0, SEEK_END);
       return FALSE;
     }
@@ -145,7 +150,7 @@ class File {
   /**
    * Checks to see if the file pointer is at the begining of the file.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if this position is at the start of the file FALSE otherwise.
    */
   public function start() {
@@ -155,14 +160,13 @@ class File {
   /**
    * Checks if the file pointer is on EOF character.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the file pointer is on a EOF character FALSE otherwise.
    */
   public function EOF() {
-    /**
-     * feof() is not always return TRUE when the file pointer is on the EOF character. It requires an attempt
-     * to read the EOF character to be set, and will not be set if you simply seek to the EOF character.
-     */
+    // feof() is not always return TRUE when the file pointer is on the EOF
+    // character. It requires an attempt  to read the EOF character to be set,
+    // and will not be set if you simply seek to the EOF character.
     return $this->peekc() === FALSE;
   }
 
@@ -170,7 +174,8 @@ class File {
    * Peeks at the current character.
    *
    * @return string
-   *   The single character the file pointer is currently pointing at. FALSE when the character is EOF.
+   *   The single character the file pointer is currently pointing at. FALSE
+   *   when the character is EOF.
    */
   public function peekc() {
     $this->push();
@@ -182,9 +187,10 @@ class File {
   /**
    * Peeks at the current line.
    *
-   * Reading ends when length - 1 bytes have been read, on a newline (which is included in the return value),
-   * or on EOF (whichever comes first). If no length is specified, it will keep reading from the stream until
-   * it reaches the end of the line.
+   * Reading ends when length - 1 bytes have been read, on a newline (which is
+   * included in the return value), or on EOF (whichever comes first). If no
+   * length is specified, it will keep reading from the stream until it reaches
+   * the end of the line.
    *
    * @param int $length
    *   The max number of bytes to read from the current line, it must be a positive value greater than 0.
@@ -201,16 +207,16 @@ class File {
 
   /**
    * Peeks $length bytes from $offset from the file pointer position.
-   * 
+   *
    * @param int $offset
    *   The offset to move the file pointer before reading.
    * @param int $length
    *   The max number of bytes to peek.
-   * @param boolean $eof
+   * @param bool $eof
    *   Allow this function to seek passed the EOF.
-   * 
+   *
    * @return string
-   *   The peeked bytes. 
+   *   The peeked bytes.
    */
   function peek($offset, $length, $eof = TRUE) {
     $this->push();
@@ -244,7 +250,7 @@ class File {
 class TextFile extends File {
   /**
    * Supported line ending formats.
-   * 
+   *
    * End of line (EOL) sequences
    *   Unix: "\n"   0x0a
    *   DOS:  "\r\n" 0x0d0a
@@ -256,20 +262,24 @@ class TextFile extends File {
 
   /**
    * Endings
-   * 
-   * @array 
+   *
+   * @array
    */
   static protected $formats = array(self::UNIX, self::DOS, self::MAC);
 
   /**
    * Endings
-   * 
-   * @array 
+   *
+   * @array
    */
-  static protected $endings = array(self::UNIX => "\n", self::DOS => "\r\n", self::MAC => "\r");
+  static protected $endings = array(
+    self::UNIX => "\n",
+    self::DOS => "\r\n",
+    self::MAC => "\r",
+  );
 
   /**
-   * The expected line ending format. 
+   * The expected line ending format.
    *
    * @var int
    */
@@ -277,7 +287,7 @@ class TextFile extends File {
 
   /**
    * The expected line ending value.
-   * 
+   *
    * @var string
    */
   protected $ending;
@@ -289,7 +299,7 @@ class TextFile extends File {
    *   A valid file handle as returned by fopen().
    * @param int $format
    *   A valid line ending format for this file.
-   * 
+   *
    * @throws InvalidArgumentException
    *   If the $handle or $format provided is not vaild.
    */
@@ -297,7 +307,7 @@ class TextFile extends File {
     parent::__construct($handle);
     $format = isset($format) ? $format : $this->detectFormat();
     if (array_search($format, self::$formats) === FALSE) {
-      throw new InvalidArgumentException(t('Invalid format given for ' . __CLASS__));
+      throw new InvalidArgumentException(t('Invalid format given for @class', array('@class' => __CLASS__)));
     }
     $this->format = $format;
     $this->ending = self::$endings[$format];
@@ -305,13 +315,11 @@ class TextFile extends File {
 
   /**
    * Reads the file and attempts to guess the format.
-   * 
+   *
    * @return string
    */
   public function detectFormat() {
-    /**
-     * @todo implment
-     */
+    // @todo implment
     return self::UNIX;
   }
 
@@ -322,11 +330,11 @@ class TextFile extends File {
    *  Windows end of line sequence:  "\r\n"
    *  Unix end of line sequence: "\n"
    *  Mac end of line sequence: "\r"
-   * 
+   *
    * @param int $format
    *   Used to return the format discovered.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if the file pointer is on a EOL character FALSE otherwise.
    */
   public function EOL() {
@@ -366,7 +374,8 @@ class TextFile extends File {
   public function seekBeforeEOL() {
     if ($this->EOL()) {
       $c = $this->peekc();
-      $move = ($this->format & self::DOS) && strcasecmp($c, "\n") ? 2 : 1; // DOS is the only two character EOL.
+      // DOS is the only two character EOL.
+      $move = ($this->format & self::DOS) && strcasecmp($c, "\n") ? 2 : 1;
       $this->seek(-$move, SEEK_CUR);
     }
     return $this->pos;
@@ -384,8 +393,10 @@ class TextFile extends File {
   public function seekAfterEOL() {
     if ($this->EOL()) {
       $c = $this->peekc();
-      $move = ($this->format & self::DOS) && strcasecmp($c, "\r") ? 2 : 1; // DOS is the only two character EOL.
-      $this->seek($move, SEEK_CUR, FALSE); // Don't allow this function to go passed the EOF.
+      // DOS is the only two character EOL.
+      $move = ($this->format & self::DOS) && strcasecmp($c, "\r") ? 2 : 1;
+      // Don't allow this function to go passed the EOF.
+      $this->seek($move, SEEK_CUR, FALSE);
     }
     return $this->pos;
   }
@@ -393,33 +404,37 @@ class TextFile extends File {
   /**
    * Moves the pointer the start of the line in which it currently is on.
    *
-   * If we are to think of the file as a single stream of characters, going left to right.
-   * The start of the line is defined as the leftmost character including the current position
-   * that is not the previous lines EOL character if there is no previous line then its position 0.
+   * If we are to think of the file as a single stream of characters, going
+   * left to right. The start of the line is defined as the leftmost character
+   * including the current position that is not the previous lines EOL
+   * character if there is no previous line then its position 0.
    *
    * @return int
    *   The current position.
    */
   public function seekLineStart() {
     if ($this->EOF()) {
-      $this->seek(0, SEEK_END); // Make sure the pointer isn't passed the EOF.
+      // Make sure the pointer isn't passed the EOF.
+      $this->seek(0, SEEK_END);
     }
-    $this->seekBeforeEOL(); // If we are on the EOL character for our line move infront of it.
-    /**
-     * Now on a non-EOL character of this line or in the case where this line
-     * is only an EOL character(s) the previous lines EOL character. Or in the case
-     * where this line is the first line and is only an EOL character we are at position 0
-     */
+    // If we are on the EOL character for our line move infront of it.
+    $this->seekBeforeEOL();
+
+    // Now on a non-EOL character of this line or in the case where this line
+    // is only an EOL character(s) the previous lines EOL character. Or in the
+    // case where this line is the first line and is only an EOL character we
+    // are at position 0
     do {
-      /**
-       * Note that this could be speed up by reading large chunks of the file and then
-       * processing them but this is easier/safer for the moment.
-       */
-      if ($this->EOL()) { // We are on the previous line, move back to our line
+      // Note that this could be speed up by reading large chunks of the file and
+      // then processing them but this is easier/safer for the moment.
+
+      // We are on the previous line, move back to our line
+      if ($this->EOL()) {
         $this->seekAfterEOL();
         break;
       }
-    } while ($this->seek(-1, SEEK_CUR)); // Keep looking for the previous line will stop at 0.
+      // Keep looking for the previous line will stop at 0.
+    } while ($this->seek(-1, SEEK_CUR));
     return $this->pos;
   }
 
@@ -447,15 +462,14 @@ class TextFile extends File {
       $this->seek(0, SEEK_END); // Make sure the pointer isn't passed the EOF.
     }
     do {
-      /**
-       * Note that this could be speed up by reading large chunks of the file and then
-       * processing them but this is easier/safer for the moment.
-       */
+       // Note that this could be speed up by reading large chunks of the file
+       // and then processing them but this is easier/safer for the moment.
       if ($this->EOL()) {
         $this->seekLastEOL();
         break;
       }
-    } while ($this->seek(1, SEEK_CUR, FALSE)); // Keep looking for the end of this line stop at EOF.
+    // Keep looking for the end of this line stop at EOF.
+    } while ($this->seek(1, SEEK_CUR, FALSE));
     return $this->pos;
   }
 
@@ -469,7 +483,8 @@ class TextFile extends File {
    */
   public function seekPrevLineEnd() {
     $this->seekLineStart();
-    return $this->seek(-1, SEEK_CUR); // Move to previous line, if position is 0 nothing happens.
+    // Move to previous line, if position is 0 nothing happens.
+    return $this->seek(-1, SEEK_CUR);
   }
 
   /**
@@ -491,7 +506,8 @@ class TextFile extends File {
    */
   public function seekNextLineStart() {
     $this->seekLineEnd();
-    if (!$this->EOF()) { // Don't move pass the EOF
+    // Don't move pass the EOF
+    if (!$this->EOF()) {
       $this->seek(1, SEEK_CUR);
     }
     return $this->pos;
@@ -512,7 +528,7 @@ class TextFile extends File {
 
   /**
    * Sets the position of the file pointer at the start of the line defined by offset from $whence.
-   * 
+   *
    * Will not move the pointer past the start/end of the file.
    *
    * @param int $offset
@@ -523,7 +539,7 @@ class TextFile extends File {
    *    SEEK_SET - Set position equal to offset lines.
    *    SEEK_CUR - Set position to current location plus lines.
    *    SEEK_END - Set position to end-of-file plus lines.
-   * 
+   *
    * @return boolean
    *   TRUE if the seek succeeded, FALSE otherwise.
    */
@@ -539,7 +555,7 @@ class TextFile extends File {
 
   /**
    * Similar to fgets but respects the files encoding.
-   * 
+   *
    * fgets is significatly faster but this is only noticible on large files with 10,000 or more lines.
    */
   public function getLine() {
@@ -555,10 +571,8 @@ class TextFile extends File {
         fseek($this->handle, $start + $pos + strlen($this->ending), SEEK_SET);
         return substr($buffer, 0, $pos);
       }
-      /**
-       * If it didn't match maybe the first character was at the 
-       * end of the line since encoding is at most 2 characters.
-       */
+       // If it didn't match maybe the first character was at the
+       // end of the line since encoding is at most 2 characters.
       $offset = strlen($buffer) - 2;
     }
 
@@ -569,23 +583,23 @@ class TextFile extends File {
 
 /**
  * Extends File class for processing CSV. Allows multiple delimiters and multicharacter delimiters.
- * 
+ *
  * Fields are defined as the string of characters between any delimited values and/or the start/end of the file.
- * 
+ *
  * Unlike lines fields do not include there delimiter.
  */
 class DelimitedFile extends TextFile {
 
   /**
    * The delimiters that seperate fields.
-   * 
+   *
    * @var array
    */
   protected $delimiters;
 
   /**
    * A PREG pattern for matching delimiters.
-   * 
+   *
    * @var string
    */
   protected $pattern;
@@ -597,9 +611,9 @@ class DelimitedFile extends TextFile {
    *   A valid file handle as returned by fopen().
    * @param int $format
    *   A valid line ending format for this file.
-   * @param mixed $delimiters 
+   * @param mixed $delimiters
    *   A single delimiter or a collection of delimiters that can be any number of characters.
-   * 
+   *
    * @throws InvalidArgumentException
    *   If the $handle or $format provided is not vaild.
    */
@@ -618,22 +632,22 @@ class DelimitedFile extends TextFile {
 
   /**
    * Checks if the file pointer is on a delimiter character(s).
-   * 
-   * @return boolean 
+   *
+   * @return boolean
    *   TRUE if the file pointer is on a delimiter FALSE otherwise.
    */
   public function isDelimiterSafe() {
     $ret = FALSE;
     $this->push();
     if ($this->EOF()) {
-      return TRUE; // EOF is always a delimiter.
+      // EOF is always a delimiter.
+      return TRUE;
     }
     $c = $this->peekc();
     foreach ($this->delimiters as $delimiter) {
-      /**
-       * Warning this class currently doesn't support delimited values 
-       * that contain the same character more than once. Due to the use of strpos below.
-       */
+      // Warning this class currently doesn't support delimited values
+      // that contain the same character more than once. Due to the use
+      // of strpos below.
       if (($offset = strpos($delimiter, $c)) !== FALSE) {
         $this->push();
         $this->seek(-$offset, SEEK_CUR); // Move to the expected start of the delimiter.
@@ -655,14 +669,15 @@ class DelimitedFile extends TextFile {
   public function seekAfterDelimiter() {
     $c = $this->peekc();
     foreach ($this->delimiters as $delimiter) {
-      /**
-       * Warning this class currently doesn't support delimited values 
-       * that contain the same character more than once. Due to the use of strpos below.
-       */
+
+      // Warning this class currently doesn't support delimited values
+      // that contain the same character more than once. Due to the use of
+      // strpos below.
       if (($offset = strpos($delimiter, $c)) !== FALSE) {
         $length = strlen($delimiter);
         $this->push();
-        $this->seek(-$offset, SEEK_CUR); // Move to the expected start of the delimiter.
+        // Move to the expected start of the delimiter.
+        $this->seek(-$offset, SEEK_CUR);
         $read = $this->read($length);
         $this->pop();
         if (strcmp($read, $delimiter) == 0) {
@@ -676,10 +691,10 @@ class DelimitedFile extends TextFile {
 
   /**
    * Moves the file pointer to the start of a field.
-   * 
+   *
    * Exceptional cases:
    *  If the file pointer is on the first field it will be moved to positon 0.
-   * 
+   *
    * @return int
    *   The current file pointer position.
    */
@@ -691,29 +706,32 @@ class DelimitedFile extends TextFile {
 
   /**
    * Gets the current delimited field from the point the file pointer is on.
-   * 
+   *
    * Fails if the file pointer is on a delimiter.
-   * 
+   *
    * @return string
    *   The current field if successful FALSE otherwise.
    */
   public function getField() {
-    if ($this->EOF()) { // No fields remain.
+    // No fields remain.
+    if ($this->EOF()) {
       return FALSE;
     }
     $ret = '';
-    while (!$this->isDelimiter()) { // Get non delimited characters
+    // Get non delimited characters.
+    while (!$this->isDelimiter()) {
       $ret .= $this->getc();
     }
-    $this->seekAfterDelimiter(); // Move to start of next field
+    // Move to start of next field.
+    $this->seekAfterDelimiter();
     return $ret;
   }
 
   /**
    * Gets a number of fields up to max $count if they exist.
-   * 
-   * @param int $count 
-   * 
+   *
+   * @param int $count
+   *
    * @return array
    *   The requested fields up to a max of $count.
    */
@@ -727,13 +745,13 @@ class DelimitedFile extends TextFile {
   }
 
   /**
-   * Unlike other functions in these classes this one has be optimized for speed. 
-   * 
+   * Unlike other functions in these classes this one has be optimized for speed.
+   *
    * fgetcsv() is about twice as fast as this function but this supports multiple delimiters, allows for EOL characters
    * to not be considered delimters useful when dealing with mixed line endings.
-   * 
+   *
    * The speed difference is only noticible on large files with 10,000 or more lines.
-   * 
+   *
    * @param int $count
    *   The number of fields to get.
    * @return array
@@ -746,9 +764,9 @@ class DelimitedFile extends TextFile {
 
   /**
    * Map Matches from getFields()
-   * 
+   *
    * @param array $item
-   * @param type $key 
+   * @param type $key
    */
   private function mapMatches(array &$item, $key) {
     $item = $item[0];
@@ -775,10 +793,8 @@ class DelimitedFile extends TextFile {
  *   The file position
  */
 function file_line_start($handle, $read_size = 64) {
-  /**
-   * Ignore the cruft at the end of a file. This is important without it this function will assume the cruft
-   * at the end of the file was a valid line.
-   */
+  // Ignore the cruft at the end of a file. This is important without it this
+  // function will assume the cruft at the end of the file was a valid line.
   if (file_eof($handle)) {
     file_end($handle);
   }
@@ -787,23 +803,25 @@ function file_line_start($handle, $read_size = 64) {
   if (ftell($handle) == 0) { // Already at the start of a line by definition.
     return 0; // Ignore all other processing.
   }
-  do { // Parse a section of the file looking for an EOL character from the previous line.
+  // Parse a section of the file looking for an EOL character from the previous line.
+  do {
     $pos = ftell($handle);
     $length = min($pos, $read_size);
     $last_section = ($pos - $length) == 0;
     fseek($handle, -$length, SEEK_CUR);
-    /**
-     * Since we are looking for the character immediately following the EOL it not important if we get both
-     * characters from Windows EOL
-     */
-    $s = fread($handle, $length); // Get section to parse.
-    // Search for the last carriage return in this section
-    $pattern = '/\r[^\r]*$/D'; // Last "\r"
+
+    // Since we are looking for the character immediately following the EOL it
+    // not important if we get both characters from Windows EOL
+
+     // Get section to parse.
+    $s = fread($handle, $length);
+    // Search for the last carriage return in this section (last "\r")
+    $pattern = '/\r[^\r]*$/D';
     $matches = array();
     preg_match($pattern, $s, $matches, PREG_OFFSET_CAPTURE);
     $carriage_return_pos = isset($matches[0][1]) ? $matches[0][1] : NULL;
-    // Search for the last new line in this section
-    $pattern = '/\n[^\n]*$/D'; // Last "\n"
+    // Search for the last new line in this section (last "\n")
+    $pattern = '/\n[^\n]*$/D';
     $matches = array();
     preg_match($pattern, $s, $matches, PREG_OFFSET_CAPTURE);
     $new_line_pos = isset($matches[0][1]) ? $matches[0][1] : NULL;
@@ -812,11 +830,14 @@ function file_line_start($handle, $read_size = 64) {
     // Move to the next section.
     fseek($handle, -$length, SEEK_CUR);
   } while (!$found_at && !$last_section);
-  if ($found_at) { // Move pointer to character following the EOL
+  // Move pointer to character following the EOL
+  if ($found_at) {
     fseek($handle, $found_at, SEEK_CUR);
     file_move_after_eol($handle);
   }
-  return ftell($handle); // Current positon will be the character following the previous lines "\n" or the start of the file
+  // Current positon will be the character following the previous lines "\n" or
+  // the start of the file
+  return ftell($handle);
 }
 
 /**
@@ -840,10 +861,12 @@ function file_line_end($handle, $read_size = 64) {
     file_end($handle);
     return ftell($handle);
   }
-  if (file_eol($handle)) { // If at the EOL return the positon of the last character in the EOL sequence.
+  // If at the EOL return the positon of the last character in the EOL sequence.
+  if (file_eol($handle)) {
     return file_move_end_of_eol($handle);
   }
-  do { // Parse a section of the file looking for an EOL character.
+  // Parse a section of the file looking for an EOL character.
+  do {
     $remaining = file_tell_eof($handle) - ftell($handle);
     $length = min($remaining, $read_size);
     $last_section = ($remaining - $length) == 0;
@@ -884,8 +907,10 @@ function file_line_end($handle, $read_size = 64) {
  *   The file position
  */
 function file_line_prev($handle) {
-  $pos = file_line_start($handle); // Either at beginning of file or the character following an EOL.
-  fungetc($handle); // Move back one character potentially onto the EOL, won't wrap the file.
+  // Either at beginning of file or the character following an EOL.
+  $pos = file_line_start($handle);
+  // Move back one character potentially onto the EOL, won't wrap the file.
+  fungetc($handle);
   file_move_before_eol($handle);
   return file_line_start($handle);
 }
@@ -970,14 +995,16 @@ function file_move_forward($handle, $lines) {
 /**
  * Similar to fgetcsv, except it ignores enclosures, as fgetcvs breaks with open ended quotes.
  *
- * Also the number of expected fields can be given in which case the function will read multiple lines
- * until it has gotten the all the required fields. This helps deal with files that don't have properly
- * escaped newlines. The newlines will be preserved in the returned values.
+ * Also the number of expected fields can be given in which case the function
+ * will read multiple lines until it has gotten the all the required fields.
+ * This helps deal with files that don't have properly escaped newlines. The
+ * newlines will be preserved in the returned values.
  *
- * Please check too see if fgetcsv works before using this function as its scope is limited, it doesn't deal with
- * enclosures or escapes correctly.
+ * Please check too see if fgetcsv works before using this function as its
+ * scope is limited, it doesn't deal with enclosures or escapes correctly.
  *
- * Note that it is possible for this function to return more fields than expected.
+ * Note that it is possible for this function to return more fields than
+ * expected.
  *
  * @param resource $handle
  *   File handle.
@@ -992,14 +1019,16 @@ function file_move_forward($handle, $lines) {
  *   An array containing the values in each field.
  */
 function file_get_csv($handle, $length = 0, $delimiter = ',', $expected_fields = NULL) {
-  $string = (isset($length) && $length > 0) ? fgets($handle, $length) : fgets($handle); // fget will issue a warning if given 0 or NULL for length.
+  // Function fget() will issue a warning if given 0 or NULL for length.
+  $string = (isset($length) && $length > 0) ? fgets($handle, $length) : fgets($handle);
   if ($string == FALSE) {
     return FALSE;
   }
   if (isset($expected_fields)) {
     $fields = explode($delimiter, $string);
     while (count($fields) < $expected_fields) {
-      $string = (isset($length) && $length > 0) ? fgets($handle, $length) : fgets($handle); // fget will issue a warning if given 0 or NULL for length.
+      // Function fget() will issue a warning if given 0 or NULL for length.
+      $string = (isset($length) && $length > 0) ? fgets($handle, $length) : fgets($handle);
       if ($string == FALSE) {
         break;
       }
@@ -1010,7 +1039,8 @@ function file_get_csv($handle, $length = 0, $delimiter = ',', $expected_fields =
     }
   }
   else {
-    $fields = explode($delimiter, $string); // No concern for the number of expected fields.
+    // No concern for the number of expected fields.
+    $fields = explode($delimiter, $string);
   }
   // Trim the last new line as it is meant to delimit the end of the row.
   $last_index = count($fields) - 1;
@@ -1021,17 +1051,21 @@ function file_get_csv($handle, $length = 0, $delimiter = ',', $expected_fields =
 /**
  * Similar to file_get_csv, except it moves backward though the file rather than forward.
  *
- * Also the number of expected fields can be given in which case the function will read multiple lines
- * until it has gotten the all the required fields. This helps deal with files that don't have properly
- * escaped newlines. The newlines will be preserved in the returned values.
+ * Also the number of expected fields can be given in which case the function
+ * will read multiple lines until it has gotten the all the required fields.
+ * This helps deal with files that don't have properly escaped newlines. The
+ * newlines will be preserved in the returned values.
  *
- * Please check too see if fgetcsv works before using this function as its scope is limitied, it doesn't deal with
- * enclosures or escapes correctly, it ignores them. By ignoring enclosures we can avoid fgetcsv() breaking on unclosed
+ * Please check too see if fgetcsv works before using this function as its scope
+ * is limitied, it doesn't deal with enclosures or escapes correctly, it ignores
+ * them. By ignoring enclosures we can avoid fgetcsv() breaking on unclosed
  * quotes.
  *
- * Note that it is possible for this function to return more fields than expected.
+ * Note that it is possible for this function to return more fields than
+ * expected.
  *
- * Becareful of trailing new lines at the end of csv files, and use of this function from arbitrary positions in a file.
+ * Becareful of trailing new lines at the end of csv files, and use of this
+ * function from arbitrary positions in a file.
  *
  * This function doesn't work in all the possible ways one might infer based on fgetcsv()
  *
@@ -1052,7 +1086,8 @@ function file_unget_csv($handle, $length = 0, $delimiter = ',', $expected_fields
     return FALSE;
   }
   $fields = explode($delimiter, $string);
-  if (isset($expected_fields) && $length == 0) { // Doesn't support length with $expected fields.
+  // Doesn't support length with $expected fields.
+  if (isset($expected_fields) && $length == 0) {
     while (count($fields) < $expected_fields) {
       if (($string = fungets($handle)) == FALSE) {
         break;
@@ -1105,8 +1140,10 @@ function file_end($handle) {
  *   The file position
  */
 function file_move_before_eol($handle) {
-  if (file_eol($handle)) { // EOL Character found.
-    if (fseek($handle, -1, SEEK_CUR)) { // fseek may fail
+  // EOL Character found.
+  if (file_eol($handle)) {
+    // fseek may fail.
+    if (fseek($handle, -1, SEEK_CUR)) {
       file_move_before_eol($handle);
     }
   }
@@ -1132,8 +1169,9 @@ function file_move_after_eol($handle) {
 /**
  * If the file pointer is on a EOL sequence move it to after the sequence if possible.
  *
- * This function assumes that the file pointer is currently on a EOL sequence when it is called. Use file_eol() to check
- * before calling this function. If the file pointer is not on a EOL sequence FALSE is returned.
+ * This function assumes that the file pointer is currently on a EOL sequence
+ * when it is called. Use file_eol() to check before calling this function.
+ * If the file pointer is not on a EOL sequence FALSE is returned.
  *
  * @param resource $handle
  *   File handle.
@@ -1149,7 +1187,8 @@ function file_move_end_of_eol($handle) {
   if (fpeekc($handle) == "\r") {
     fseek($handle, 1, SEEK_CUR);
     if (fpeekc($handle) != "\n") {
-      fseek($handle, -1, SEEK_CUR); // Revert check for "\n"
+      // Revert check for "\n".
+      fseek($handle, -1, SEEK_CUR);
     }
     return ftell($handle);
   }
@@ -1165,7 +1204,7 @@ function file_move_end_of_eol($handle) {
  * @param resource $handle
  *   File handle.
  *
- * @return boolean
+ * @return bool
  *   TRUE if successful, FALSE otherwise.
  */
 function file_eol($handle) {
@@ -1175,7 +1214,8 @@ function file_eol($handle) {
 /**
  * feof() only works after a 'read' call like fgetc(), so functions like fseek() will invalidated it.
  *
- * This function will work the same as feof() except it does not require a 'read' call before.
+ * This function will work the same as feof() except it does not require a
+ * 'read' call before.
  *
  * @param resource $handle
  *   File handle.
@@ -1211,7 +1251,8 @@ function file_tell_eof($handle) {
  *
  * Returns FALSE when the character is EOF.
  *
- * feof() will not work immeditely after this function is called. Use file_eof() instead.
+ * feof() will not work immeditely after this function is called. Use
+ * file_eof() instead.
  *
  * @param resource $handle
  *   File handle.
@@ -1221,7 +1262,8 @@ function file_tell_eof($handle) {
  */
 function fungetc($handle) {
   $c = fpeekc($handle);
-  fseek($handle, -1, SEEK_CUR); // Attempt to move to the previous character.
+  // Attempt to move to the previous character.
+  fseek($handle, -1, SEEK_CUR);
   return $c;
 }
 
@@ -1232,7 +1274,8 @@ function fungetc($handle) {
  *
  * Returns FALSE when the character is EOF.
  *
- * feof() will not work immeditely after this function is called. Use file_eof() instead.
+ * feof() will not work immeditely after this function is called. Use file_eof()
+ * instead.
  *
  * @param resource $handle
  *   File handle.
@@ -1244,14 +1287,19 @@ function fungetc($handle) {
  *   The read characters, or FALSE if EOF or if there is an Error.
  */
 function fungets($handle, $length = 0) {
-  $pos = ftell($handle); // Store current position.
+  // Store current position.
+  $pos = ftell($handle);
   $start = file_line_start($handle);
   $s = fpeeks($handle);
-  $offset = $pos - $start; // We want to count the current character in the offset.
-  $length = ($length > 0) ? min($length - 1, $offset) : $offset; // For consistency with fgets we treat length as starting from 1 rather than 0.
+  // We want to count the current character in the offset.
+  $offset = $pos - $start;
+  // For consistency with fgets we treat length as starting from 1 rather than 0.
+  $length = ($length > 0) ? min($length - 1, $offset) : $offset;
   $diff = $offset - $length;
-  $s = drupal_substr($s, $offset - $length, $length); // Take out the chunk we are interested in.
-  fseek($handle, $pos - $length - 1, SEEK_SET); // Move our pointer to character preceding the amount read out.
+  // Take out the chunk we are interested in.
+  $s = drupal_substr($s, $offset - $length, $length);
+  // Move our pointer to character preceding the amount read out.
+  fseek($handle, $pos - $length - 1, SEEK_SET);
   return $s;
 }
 

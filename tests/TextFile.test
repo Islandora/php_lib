@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Unit Tests.
  */
 
@@ -35,10 +34,10 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
 
   public function tearDown() {
     parent::tearDown();
-    unlink($this->filename);
+    domxml_unlink_node($this->filename);
   }
 
-  private function writeToFile($content) {
+  protected function writeToFile($content) {
     $handle = fopen($this->filename, 'wb');
     fwrite($handle, $content);
     fclose($handle);
@@ -49,9 +48,10 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
    */
   public function test_EOL() {
     $this->writeToFile("a|b\nc\r\nd");
-    // Test UNIX
+    // Test UNIX.
     $file = new TextFile(fopen($this->filename, 'rb'), TextFile::UNIX);
-    $values = array(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE);
     $successful = TRUE;
     foreach ($values as $value) {
       if ($file->EOL() !== $value) {
@@ -64,7 +64,8 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
     $this->assert($successful, "TextFile::EOL() Correctly identified all Unix EOL.");
     // Test DOS
     $file = new TextFile(fopen($this->filename, 'rb'), TextFile::DOS);
-    $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE);
     $successful = TRUE;
     foreach ($values as $value) {
       if ($file->EOL() !== $value) {
@@ -75,9 +76,10 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek(1, SEEK_CUR);
     }
     $this->assert($successful, "TextFile::EOL() Correctly identified all DOS EOL.");
-    // Test MAC
+    // Test MAC.
     $file = new TextFile(fopen($this->filename, 'rb'), TextFile::MAC);
-    $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE);
     $successful = TRUE;
     foreach ($values as $value) {
       if ($file->EOL() !== $value) {
@@ -88,13 +90,15 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek(1, SEEK_CUR);
     }
     $this->assert($successful, "TextFile::EOL() Correctly identified all MAC EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   public function test_seekBeforeEOL() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
-    $values = array(0, 1, 2, 2, 4, 5, 5, 7, 7); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(0, 1, 2, 2, 4, 5, 5, 7, 7);
     $file = new TextFile(fopen($this->filename, 'rb'));
     $successful = TRUE;
     for ($i = 0; $i < strlen($content); $i++) {
@@ -109,13 +113,15 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "TextFile::seekBeforeEOL() Correctly seeked before all EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   public function test_seekAfterEOL() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
-    $values = array(0, 1, 2, 4, 4, 5, 7, 7, 7); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(0, 1, 2, 4, 4, 5, 7, 7, 7);
     $file = new TextFile(fopen($this->filename, 'rb'));
     $successful = TRUE;
     for ($i = 0; $i < strlen($content); $i++) {
@@ -130,13 +136,15 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "TextFile::seekAfterEOL() Correctly seeked after all EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   public function test_seekLineStart() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
-    $values = array(0, 0, 0, 0, 4, 4, 4, 7, 7); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(0, 0, 0, 0, 4, 4, 4, 7, 7);
     $file = new TextFile(fopen($this->filename, 'rb'));
     $successful = TRUE;
     for ($i = 0; $i < strlen($content); $i++) {
@@ -151,13 +159,15 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "TextFile::seekLineStart() Correctly seeked after all EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   public function test_seekLineEnd() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
-    $values = array(3, 3, 3, 3, 6, 6, 6, 8, 8); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(3, 3, 3, 3, 6, 6, 6, 8, 8);
     $file = new TextFile(fopen($this->filename, 'rb'));
     $successful = TRUE;
     for ($i = 0; $i < strlen($content); $i++) {
@@ -172,13 +182,15 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "TextFile::seekLineEnd() Correctly seeked after all EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
-  
+
   public function test_seekPrevLineEnd() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
-    $values = array(3, 3, 3, 3, 6, 6, 6, 8, 8); // Includes EOF delimiter
+    // Includes EOF delimiter.
+    $values = array(3, 3, 3, 3, 6, 6, 6, 8, 8);
     $file = new TextFile(fopen($this->filename, 'rb'));
     $successful = TRUE;
     for ($i = 0; $i < strlen($content); $i++) {
@@ -193,7 +205,7 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "TextFile::seekLineEnd() Correctly seeked after all EOL.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
-
 }

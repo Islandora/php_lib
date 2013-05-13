@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Unit Tests.
  */
 
@@ -40,5 +39,4 @@ class PHPLib_Backtrace_TestCase extends DrupalUnitTestCase {
   public function testFunctions() {
 
   }
-
 }

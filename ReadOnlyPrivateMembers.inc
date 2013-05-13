@@ -4,6 +4,7 @@
  * @file
  *
  */
+
 module_load_include('inc', 'php_lib', 'Backtrace');
 
 /**
@@ -56,6 +57,7 @@ class ReadOnlyPrivateMembers {
 
   /**
    *
+   *
    * @param string $name
    */
   public function has($name) {
@@ -67,8 +69,10 @@ class ReadOnlyPrivateMembers {
 
   /**
    *
+   *
    * @param string $name
-   * @return boolean
+   *
+   * @return bool
    */
   public function exists($name) {
     if ($this->has($name)) {
@@ -86,7 +90,7 @@ class ReadOnlyPrivateMembers {
   }
 
   /**
-   * Removes a member
+   * Removes a member.
    *
    * @param string $name
    */
@@ -105,6 +109,7 @@ class ReadOnlyPrivateMembers {
   }
 
   /**
+   *
    *
    * @param string $name
    * @param mixed $value

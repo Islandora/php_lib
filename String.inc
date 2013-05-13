@@ -11,12 +11,14 @@
  * @param string $string
  *   The string to check.
  * @param array $matches
- *   The matches to compare the string with, if none are provided 'true' and 'false' will be used.
- * @param boolean $case_sensitive
+ *   The matches to compare the string with, if none are provided 'true'
+ *   and 'false' will be used.
+ * @param bool $case_sensitive
  *   Do a case sensitive compare? Defaults to false.
  *
- * @return boolean
- *   TRUE if the string repersents a boolean value defined by matches, FALSE other wise.
+ * @return bool
+ *   TRUE if the string repersents a boolean value defined by matches, FALSE
+ *   other wise.
  */
 function is_boolean_string($string, array $matches = NULL, $case_sensitive = FALSE) {
   $matches = isset($matches) ? $matches : array('true', 'false');
@@ -35,14 +37,15 @@ function is_boolean_string($string, array $matches = NULL, $case_sensitive = FAL
  * @param string $string
  *   The string to cast to a bool.
  * @param array $matches
- *   The matches to compare the string with, where the key is used to compare and the value is the boolean
+ *   The matches to compare the string with, where the key is used to compare
+ *   and the value is the boolean
  *   value it repersents. If none are provided 'true' and 'false' will be used.
- * @param boolean $case_sensitive
+ * @param bool $case_sensitive
  *   Do a case sensitive compare? Defaults to false.
  *
  * @return mixed
- *   If the conversion is possible a boolean value repersented by the string is returned.
- *   If not possible then the string is returned intact.
+ *   If the conversion is possible a boolean value repersented by the string is
+ *   returned. If not possible then the string is returned intact.
  */
 function cast_string_to_boolean($string, array $matches = NULL, $case_sensitive = FALSE) {
   $matches = isset($matches) ? $matches : array(
@@ -65,7 +68,8 @@ function cast_string_to_boolean($string, array $matches = NULL, $case_sensitive 
  *   The string to cast to a type.
  *
  * @return mixed
- *   If the string repersents a literal type than convert to that type, other wise return the given string intact.
+ *   If the string repersents a literal type than convert to that type, other
+ *   wise return the given string intact.
  */
 function cast_string_to_type($string) {
   if (is_string($string)) {
@@ -90,7 +94,8 @@ function cast_string_to_type($string) {
  *   The string to cast to a type.
  *
  * @return mixed
- *   If the string repersents a literal type than convert to that type, other wise return the given string intact.
+ *   If the string repersents a literal type than convert to that type, other
+ *   wise return the given string intact.
  */
 function cast_type_to_string($type) {
   if (is_bool($type)) {
@@ -121,7 +126,8 @@ function append_to_new_line($string, $appendage) {
 /**
  *
  * @param string $string
- * @return boolean
+ *
+ * @return bool
  */
 function is_non_empty_string($string) {
   return is_string($string) && trim($string) != '';

@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Unit Tests.
  */
 
@@ -116,5 +115,4 @@ EOT;
     $b2 = $list->item(1);
     $this->assertEqual(get_dom_node_xpath($b2), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][2]/*[local-name() = 'b'][1]", 'get_dom_node_xpath Namespaces: Path to grand child element with third type but different parent.');
   }
-
 }

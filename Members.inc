@@ -4,6 +4,7 @@
  * @file
  *
  */
+
 module_load_include('inc', 'php_lib', 'Backtrace');
 module_load_include('inc', 'php_lib', 'Array');
 
@@ -79,7 +80,8 @@ class Members {
   /**
    * Adds a new member and value to this class.
    *
-   * If the member is already defined its value will be overwritten with the new value.
+   * If the member is already defined its value will be overwritten with the new
+   * value.
    *
    * @param string $name
    * @param mixed $value
@@ -92,7 +94,7 @@ class Members {
   }
 
   /**
-   * Adds several members to this class
+   * Adds several members to this class.
    *
    * @param array members
    *   A map of values where the key are the member's names.

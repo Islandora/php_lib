@@ -4,6 +4,7 @@
  * @file
  *
  */
+
 module_load_include('inc', 'php_lib', 'ReadOnlyPrivateMembers');
 module_load_include('inc', 'php_lib', 'ReadOnlyProtectedMembers');
 
@@ -26,6 +27,7 @@ class ReadOnlyMembers {
   public $protected;
 
   /**
+   *
    *
    * @param array $private
    * @param array $protected
@@ -51,6 +53,7 @@ class ReadOnlyMembers {
 
   /**
    *
+   *
    * @param string $name
    */
   public function has($name) {
@@ -60,7 +63,7 @@ class ReadOnlyMembers {
   /**
    *
    * @param string $name
-   * @return boolean
+   * @return bool
    */
   public function exists($name) {
     return $this->private->exists($name) || $this->protected->exists($name);
@@ -80,6 +83,7 @@ class ReadOnlyMembers {
   }
 
   /**
+   *
    *
    * @param string $name
    * @param mixed $value

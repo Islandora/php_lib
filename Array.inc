@@ -17,7 +17,8 @@ function array_copy_recursive(array &$array) {
     if (is_object($value)) {
       $output[$key] = clone $value;
     }
-    else { // Default type copyed by default.
+    // Default type copyed by default.
+    else {
       $output[$key] = $value;
     }
   }
@@ -25,6 +26,7 @@ function array_copy_recursive(array &$array) {
 }
 
 /**
+ *
  *
  * @param array $array
  * @param type $key
@@ -40,11 +42,11 @@ function array_add(array &$array, $key, $value) {
 }
 
 /**
- * Given an array of index's this functions attempts a depth first traversal of the given array
- * using the provided indices.
+ * Given an array of index's this functions attempts a depth first traversal of the given array using the provided indices.
  *
  * @param array $form
  * @param array $indices
+ *
  * @return mixed
  *   A reference to the value at the final index if found, FALSE otherwise.
  */
@@ -61,8 +63,10 @@ function &array_traverse_path(array &$array, array $indices) {
 
 /**
  *
+ *
  * @param array $array
  * @param string $type
+ *
  * @return array
  */
 function array_filter_type(array &$array, $type) {
@@ -76,6 +80,7 @@ function array_filter_type(array &$array, $type) {
 }
 
 /**
+ *
  *
  * @param array $array
  */

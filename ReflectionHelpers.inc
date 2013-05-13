@@ -2,16 +2,15 @@
 
 /**
  * @file
- *
  * A collection of functions that help with reflection like properties.
- *
  */
 
 /**
  * Checks to see if the given variable has a class.
  *
  * @param mixed $var
- * @return boolean
+ *
+ * @return bool
  */
 function has_class($var) {
   return isset($var) && is_object($var);
@@ -23,7 +22,7 @@ function has_class($var) {
  * @param object $obj
  * @param string $type
  *
- * @return boolean
+ * @return bool
  */
 function is_type($obj, $type) {
   return has_class($obj) && get_class($obj) == $type;
@@ -35,7 +34,7 @@ function is_type($obj, $type) {
  * @param object $child
  * @param string $type
  *
- * @return boolean
+ * @return bool
  */
 function is_descendant($obj, $type) {
   $class = has_class($obj) ? get_class($obj) : NULL;
@@ -62,7 +61,8 @@ function is_or_descends_from($obj, $type) {
  *
  * @param mixed $obj
  * @param string $interface
- * @return boolean
+ *
+ * @return bool
  */
 function has_interface($obj, $interface) {
   if (has_class($obj)) {
@@ -71,4 +71,3 @@ function has_interface($obj, $interface) {
   }
   return FALSE;
 }
-

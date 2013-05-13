@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Tempory dump for classes and functions.
  */
 module_load_include('inc', 'islandora_metadata', 'Enum');
@@ -22,16 +21,17 @@ class XMLDocumentValidator {
    *
    * @var XMLValidatorType
    */
-  private $type;
+  protected $type;
 
   /**
    * The filename of the validition document.
    *
    * @var string
    */
-  private $filename;
+  protected $filename;
 
   /**
+   *
    *
    * @param XMLValidatorType $type
    * @param string $filename
@@ -46,15 +46,19 @@ class XMLDocumentValidator {
 
   /**
    *
+   *
    * @param DOMDocument $document
-   * @return boolean
+   *
+   * @return bool
    */
   public function isValid(DOMDocument $document) {
     switch ($this->type) {
       case XMLSchemaFormat::DTD():
         return $document->validate();
+
       case XMLSchemaFormat::XSD():
         return $document->schemaValidate($this->filename);
+
       case XMLSchemaFormat::RNG():
         return $document->relaxNGValidate($this->filename);
     }
@@ -67,7 +71,7 @@ class XMLDocumentValidator {
  */
 class XMLDocumentNamepaces {
   /**
-   * Constants
+   * Constants.
    */
   const xmlns = 'http://www.w3.org/2000/xmlns/';
 
@@ -139,6 +143,7 @@ class XMLDocumentNamepaces {
 
   /**
    *
+   *
    * @param DOMXPath $xpath
    */
   public function registerNamespaces(DOMXPath $xpath) {
@@ -155,7 +160,8 @@ class XMLDocumentNamepaces {
 /**
  * Handles generic XML concepts and data.
  *
- * Underscore prevents collision with the defined class in XML forms, one day they should be the same class.
+ * Underscore prevents collision with the defined class in XML forms, one day
+ * they should be the same class.
  */
 class _XMLDocument extends DOMDocument {
 
@@ -173,6 +179,7 @@ class _XMLDocument extends DOMDocument {
   protected $xpath;
 
   /**
+   *
    *
    * @param DOMDocument $document
    * @param XMLValidator $validator
@@ -211,7 +218,8 @@ class _XMLDocument extends DOMDocument {
    *   Bitwise OR of the libxml option constants.
    *
    * @return
-   * Returns TRUE on success or FALSE on failure. If called statically, returns a DOMDocument or FALSE on failure.
+   * Returns TRUE on success or FALSE on failure. If called statically, returns
+   * a DOMDocument or FALSE on failure.
    */
   public function loadXML($source, $options = NULL) {
     $ret = parent::loadXML($source, $options);
@@ -241,11 +249,10 @@ class _XMLDocument extends DOMDocument {
    *
    * If no method of validation is provided its always assumed to be valid.
    *
-   * @return boolean
+   * @return bool
    *   TRUE if valid, FALSE otherwise.
    */
   public function isValid() {
     return isset($this->validator) ? $this->validator->isValid($this) : TRUE;
   }
-
 }

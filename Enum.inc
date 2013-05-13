@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * A class to model Enumerated types. This is modeled after SplEnum which is only availible via PECL
  * PECL Restriction: http://de2.php.net/manual/en/spl-types.installation.php
  * SplEnum Class: http://de2.php.net/manual/en/class.splenum.php
@@ -31,6 +30,7 @@ abstract class Enum {
    * Create an Enumerated instance.
    *
    * @throws InvalidArgumentException
+   *
    * @param type $value
    */
   public function __construct($value = NULL) {
@@ -59,7 +59,7 @@ abstract class Enum {
   /**
    * Gets the list of the defined constants.
    *
-   * @param boolean $include_default
+   * @param bool $include_default
    *   Include __default in the output?
    *
    * @return array
@@ -190,6 +190,7 @@ abstract class Enum {
  *
  * @param $base_class enumeration name
  * @param $args array of enum values
+ *
  * @return nothing
  */
 function enum($base_class, array $args) {
@@ -199,7 +200,8 @@ function enum($base_class, array $args) {
   $type_classes = array();
 
   foreach ($args as $k => $enum) {
-    $type_class = $base_class . '_' . $enum; // Prevent Collisions
+    // Prevent Collisions.
+    $type_class = $base_class . '_' . $enum;
     $type_classes[] = $type_class;
     $static_method = 'public static function ' . $enum . '() { return ' . $type_class . '::instance(); }';
     $enums[$static_method] = '

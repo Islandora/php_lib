@@ -10,7 +10,7 @@
 		</maintenanceAgency>
 		<maintenanceHistory>
 		</maintenanceHistory>
-	</control>	
+	</control>
 	<cpfDescription>
 		<identity>
 			<entityId>id</entityId>
@@ -24,7 +24,7 @@
 				<term>Title</term>
 				<placeEntry localType="department">department</placeEntry>
 			</occupation>
-			
+
 			</function>
 		</description>
 	</cpfDescription>

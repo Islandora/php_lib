@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Unit Tests.
  */
 
@@ -27,17 +26,26 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
     );
   }
 
+  /**
+   *
+   */
   public function setUp() {
     parent::setUp('php_lib');
     module_load_include('inc', 'php_lib', 'File');
     $this->filename = file_create_filename("temp", file_directory_temp());
   }
 
+  /**
+   *
+   */
   public function tearDown() {
     parent::tearDown();
-    unlink($this->filename);
+    domxml_unlink_node($this->filename);
   }
 
+  /**
+   *
+   */
   private function writeToFile($content) {
     $handle = fopen($this->filename, 'wb');
     fwrite($handle, $content);
@@ -62,7 +70,8 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
       $file->seek(1, SEEK_CUR);
     }
     $this->assert($successful, "DelimitedFile::isDelimiter() Correctly identified all delimiters.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   /**
@@ -87,7 +96,8 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "DelimitedFile::isDelimiter() Correctly seeked after all delimiters.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   /**
@@ -96,7 +106,13 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
   public function test_getfield() {
     $delimiters = array('|', ',', "\r\n");
     $this->writeToFile("field one|field\ntwo\r\nfield three,field four");
-    $values = array('field one', "field\ntwo", 'field three', 'field four', FALSE);
+    $values = array(
+      'field one',
+      "field\ntwo",
+      'field three',
+      'field four',
+      FALSE
+    );
     $file = new DelimitedFile(fopen($this->filename, 'rb'), TextFile::UNIX, $delimiters);
     $successful = TRUE;
     foreach ($values as $value) {
@@ -111,7 +127,8 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
       }
     }
     $this->assert($successful, "DelimitedFile::getField() Correctly identified all fields.");
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
 
   /**
@@ -124,7 +141,7 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
     $file = new DelimitedFile(fopen($this->filename, 'rb'), TextFile::UNIX, $delimiters);
     $successful = TRUE;
     $fields = $file->getFields(0);
-    $this->assert(empty($fields), t('DelimitedFile::getFields() didn\'t return any fields for a count of 0.'));
+    $this->assert(empty($fields), t("DelimitedFile::getFields() didn't return any fields for a count of 0."));
     $fields = $file->getFields(2);
     $this->assertEqual(count($fields), 2, t('DelimitedFile::getFields() return the correct number of fields for the request of 2.'));
     $file->rewind();
@@ -136,7 +153,7 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
     $values = array(
       array('one', 'two'),
       array('three', 'four'),
-      array('five', 'six')
+      array('five', 'six'),
     );
     $file = new DelimitedFile(fopen($this->filename, 'rb'), TextFile::UNIX, $delimiters);
     $line = 0;
@@ -151,7 +168,7 @@ class PHPLib_DelimitedFile_TestCase extends DrupalUnitTestCase {
       $line++;
     }
     $this->assert($successful, t('DelimitedFile::getFields() correctly read all lines in the file.'));
-    unset($file); // Destroy the reference to the file.
+    // Destroy the reference to the file.
+    unset($file);
   }
-
 }

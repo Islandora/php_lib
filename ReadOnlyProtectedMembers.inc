@@ -4,6 +4,7 @@
  * @file
  *
  */
+
 module_load_include('inc', 'php_lib', 'Backtrace');
 module_load_include('inc', 'php_lib', 'Array');
 
@@ -66,8 +67,10 @@ class ReadOnlyProtectedMembers {
 
   /**
    *
+   *
    * @param string $name
-   * @return boolean
+   *
+   * @return bool
    */
   public function exists($name) {
     if ($this->has($name)) {
@@ -92,7 +95,7 @@ class ReadOnlyProtectedMembers {
   }
 
   /**
-   * Removes a member
+   * Removes a member.
    *
    * @param string $name
    */
@@ -112,6 +115,7 @@ class ReadOnlyProtectedMembers {
 
   /**
    *
+   *
    * @param string $name
    * @param mixed $value
    */
@@ -123,10 +127,16 @@ class ReadOnlyProtectedMembers {
     }
   }
 
+  /**
+   *
+   */
   public function __isset($name) {
     return $this->exists($name);
   }
 
+  /**
+   *
+   */
   public function __unset($name) {
     unset($this->values[$name]);
   }

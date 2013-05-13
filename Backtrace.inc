@@ -2,16 +2,15 @@
 
 /**
  * @file
- *
- *
  * Functions for determining call order and such...
  */
 
 /**
  * This function is only intended for use within this file.
  *
- * Convenience function used to account for the current function in the call stack.
- * The caller assumes their function is index 0, so add one to account for this function.
+ * Convenience function used to account for the current function in the call
+ * stack. The caller assumes their function is index 0, so add one to account
+ * for this function.
  *
  * @param int $index
  *   Index to modify to account for the callee in the call stack.
@@ -27,7 +26,8 @@ function _ignore_this_in_call_stack($index = NULL) {
  * @param int $index
  *
  * @return array
- *   Return the call stack properties for the given index if found. Otherwise NULL is returned.
+ *   Return the call stack properties for the given index if found. Otherwise
+ *   NULL is returned.
  */
 function get_call_stack_index($index = NULL) {
   $index = _ignore_this_in_call_stack($index);
@@ -39,7 +39,8 @@ function get_call_stack_index($index = NULL) {
 }
 
 /**
- * Gets the given property of the caller at the specified index in the call stack.
+ * Gets the given property of the caller at the specified index
+ * in the call stack.
  *
  * @param int $index
  *
@@ -147,8 +148,8 @@ function get_caller_type($index = NULL) {
  * @param int $index
  *
  * @return array
- *   If inside a function, this lists the functions arguments. If inside an included file,
- *   this lists the included file name(s).
+ *   If inside a function, this lists the functions arguments. If inside an
+ *   included file, this lists the included file name(s).
  */
 function get_caller_args($index = NULL) {
   $index = _ignore_this_in_call_stack($index);

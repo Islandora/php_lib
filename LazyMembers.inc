@@ -4,6 +4,7 @@
  * @file
  *
  */
+
 module_load_include('inc', 'php_lib', 'Members');
 
 /**
@@ -37,6 +38,7 @@ class LazyMember {
   public $dirty;
 
   /**
+   *
    *
    * @param mixed $function
    * @param object $owner
@@ -86,7 +88,8 @@ class LazyMembers extends Members {
    * Checks to see if a member is lazy.
    *
    * @param string $name
-   * @return boolean
+   *
+   * @return bool
    */
   public function isLazy($name) {
     return $this->exists($name) && ($this->values[$name] instanceof LazyMember);
@@ -109,6 +112,7 @@ class LazyMembers extends Members {
    * Return NULL if the member doesn't exist or isn't set.
    *
    * @param string $name
+   *
    * @return mixed
    */
   public function __get($name) {

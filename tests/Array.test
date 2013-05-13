@@ -2,7 +2,6 @@
 
 /**
  * @file
- *
  * Unit Tests.
  */
 
@@ -42,5 +41,4 @@ class PHPLib_Array_TestCase extends DrupalUnitTestCase {
     $b = array_copy_recursive($a);
     $this->assertEqual($a, $b, 'array_copy_recursive() produced an array of equal value.');
   }
-
 }
