@@ -66,15 +66,15 @@ EOT;
     $list = $root->getElementsByTagName('c');
     $c1 = $list->item(0);
     $path = get_dom_node_xpath($c1);
-    $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath: Path to grand child element with different type than the first two.');
+    $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath: Path to grandchild element with different type than the first two.');
     $c2 = $list->item(1);
     $path = get_dom_node_xpath($c2);
     $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath: Path to child element with different type than the first two.');
     $list = $root->getElementsByTagName('b');
     $b1 = $list->item(0);
-    $this->assertEqual(get_dom_node_xpath($b1), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'b'][1]", 'get_dom_node_xpath: Path to grand child element with third type.');
+    $this->assertEqual(get_dom_node_xpath($b1), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'b'][1]", 'get_dom_node_xpath: Path to grandchild element with third type.');
     $b2 = $list->item(1);
-    $this->assertEqual(get_dom_node_xpath($b2), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][2]/*[local-name() = 'b'][1]", 'get_dom_node_xpath: Path to grand child element with third type but different parent.');
+    $this->assertEqual(get_dom_node_xpath($b2), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][2]/*[local-name() = 'b'][1]", 'get_dom_node_xpath: Path to grandchild element with third type but different parent.');
   }
 
   public function testGetDomNodeXPathNamespaces() {
@@ -106,15 +106,15 @@ EOT;
     $list = $root->getElementsByTagName('c');
     $c1 = $list->item(0);
     $path = get_dom_node_xpath($c1);
-    $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath Namespaces: Path to grand child element with different type than the first two.');
+    $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath Namespaces: Path to grandchild element with different type than the first two.');
     $c2 = $list->item(1);
     $path = get_dom_node_xpath($c2);
     $this->assertEqual($path, "/*[local-name() = 'root'][1]/*[local-name() = 'c'][1]", 'get_dom_node_xpath Namespaces: Path to child element with different type than the first two.');
     $list = $root->getElementsByTagName('b');
     $b1 = $list->item(0);
-    $this->assertEqual(get_dom_node_xpath($b1), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'b'][1]", 'get_dom_node_xpath Namespaces: Path to grand child element with third type.');
+    $this->assertEqual(get_dom_node_xpath($b1), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][1]/*[local-name() = 'b'][1]", 'get_dom_node_xpath Namespaces: Path to grandchild element with third type.');
     $b2 = $list->item(1);
-    $this->assertEqual(get_dom_node_xpath($b2), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][2]/*[local-name() = 'b'][1]", 'get_dom_node_xpath Namespaces: Path to grand child element with third type but different parent.');
+    $this->assertEqual(get_dom_node_xpath($b2), "/*[local-name() = 'root'][1]/*[local-name() = 'a'][2]/*[local-name() = 'b'][1]", 'get_dom_node_xpath Namespaces: Path to grandchild element with third type but different parent.');
   }
 
 }

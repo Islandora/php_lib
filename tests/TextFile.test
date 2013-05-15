@@ -61,7 +61,7 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
       $file->seek(1, SEEK_CUR);
     }
-    $this->assert($successful, "TextFile::EOL() Correctly identified all Unix EOL.");
+    $this->assert($successful, "TextFile::EOL() correctly identified all Unix EOL.");
     // Test DOS
     $file = new TextFile(fopen($this->filename, 'rb'), TextFile::DOS);
     $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, FALSE, FALSE); // Includes EOF delimiter
@@ -74,7 +74,7 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
       $file->seek(1, SEEK_CUR);
     }
-    $this->assert($successful, "TextFile::EOL() Correctly identified all DOS EOL.");
+    $this->assert($successful, "TextFile::EOL() correctly identified all DOS EOL.");
     // Test MAC
     $file = new TextFile(fopen($this->filename, 'rb'), TextFile::MAC);
     $values = array(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, FALSE, FALSE, FALSE); // Includes EOF delimiter
@@ -87,7 +87,7 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       }
       $file->seek(1, SEEK_CUR);
     }
-    $this->assert($successful, "TextFile::EOL() Correctly identified all MAC EOL.");
+    $this->assert($successful, "TextFile::EOL() correctly identified all MAC EOL.");
     unset($file); // Destroy the reference to the file.
   }
 
@@ -101,14 +101,14 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek($i);
       if ($file->seekBeforeEOL() !== $values[$i]) {
         $successful = FALSE;
-        $this->assert($successful, t('TextFile::seekBeforeEOL() incorrectly moved to "%actual" expected "%expected"', array(
+        $this->assert($successful, t('TextFile::seekBeforeEOL() incorrectly moved to "%actual" (expected: "%expected")', array(
               '%actual' => $file->pos,
               '%expected' => $values[$i]))
         );
         break;
       }
     }
-    $this->assert($successful, "TextFile::seekBeforeEOL() Correctly seeked before all EOL.");
+    $this->assert($successful, "TextFile::seekBeforeEOL() correctly moved pointer to before all EOL.");
     unset($file); // Destroy the reference to the file.
   }
 
@@ -122,14 +122,14 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek($i);
       if ($file->seekAfterEOL() !== $values[$i]) {
         $successful = FALSE;
-        $this->assert($successful, t('TextFile::seekAfterEOL() incorrectly moved to "%actual" expected "%expected"', array(
+        $this->assert($successful, t('TextFile::seekAfterEOL() incorrectly moved to "%actual" (expected: "%expected")', array(
               '%actual' => $file->pos,
               '%expected' => $values[$i]))
         );
         break;
       }
     }
-    $this->assert($successful, "TextFile::seekAfterEOL() Correctly seeked after all EOL.");
+    $this->assert($successful, "TextFile::seekAfterEOL() Correctly moved pointer to after all EOL.");
     unset($file); // Destroy the reference to the file.
   }
 
@@ -143,14 +143,14 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek($i);
       if ($file->seekLineStart() !== $values[$i]) {
         $successful = FALSE;
-        $this->assert($successful, t('TextFile::seekLineStart() incorrectly moved to "%actual" expected "%expected"', array(
+        $this->assert($successful, t('TextFile::seekLineStart() incorrectly moved to "%actual" (expected: "%expected")', array(
               '%actual' => $file->pos,
               '%expected' => $values[$i]))
         );
         break;
       }
     }
-    $this->assert($successful, "TextFile::seekLineStart() Correctly seeked after all EOL.");
+    $this->assert($successful, "TextFile::seekLineStart() correctly moved pointer to the start of each line.");
     unset($file); // Destroy the reference to the file.
   }
 
@@ -164,17 +164,17 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek($i);
       if ($file->seekLineEnd() !== $values[$i]) {
         $successful = FALSE;
-        $this->assert($successful, t('TextFile::seekLineEnd() incorrectly moved to "%actual" expected "%expected"', array(
+        $this->assert($successful, t('TextFile::seekLineEnd() incorrectly moved to "%actual" (expected: "%expected")', array(
               '%actual' => $file->pos,
               '%expected' => $values[$i]))
         );
         break;
       }
     }
-    $this->assert($successful, "TextFile::seekLineEnd() Correctly seeked after all EOL.");
+    $this->assert($successful, "TextFile::seekLineEnd() correctly moved pointer to after all EOL.");
     unset($file); // Destroy the reference to the file.
   }
-  
+
   public function test_seekPrevLineEnd() {
     $content = "a|b\nc\r\nd";
     $this->writeToFile($content);
@@ -185,14 +185,14 @@ class PHPLib_TextFile_TestCase extends DrupalUnitTestCase {
       $file->seek($i);
       if ($file->seekLineEnd() !== $values[$i]) {
         $successful = FALSE;
-        $this->assert($successful, t('TextFile::seekLineEnd() incorrectly moved to "%actual" expected "%expected"', array(
+        $this->assert($successful, t('TextFile::seekLineEnd() incorrectly moved to "%actual" (expected: "%expected")', array(
               '%actual' => $file->pos,
               '%expected' => $values[$i]))
         );
         break;
       }
     }
-    $this->assert($successful, "TextFile::seekLineEnd() Correctly seeked after all EOL.");
+    $this->assert($successful, "TextFile::seekLineEnd() correctly moved pointer to after all EOL.");
     unset($file); // Destroy the reference to the file.
   }
 

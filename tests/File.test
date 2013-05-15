@@ -37,7 +37,7 @@ class PHPLib_File_TestCase extends DrupalUnitTestCase {
     parent::tearDown();
     unlink($this->filename);
   }
-  
+
   private function writeToFile($content) {
     $handle = fopen($this->filename, 'wb');
     fwrite($handle, $content);
@@ -53,9 +53,9 @@ class PHPLib_File_TestCase extends DrupalUnitTestCase {
     $successful = $file->seek(-1);
     $this->assert(!$successful, t('File::seek() won\'t seek before the start of the file.'));
     $successful = $file->seek(1, SEEK_END);
-    $this->assert($successful, t('File::seek() will seek passed the end of the file by default.'));
+    $this->assert($successful, t('File::seek() will seek past the end of the file by default.'));
     $successful = $file->seek(1, SEEK_END, FALSE);
-    $this->assert(!$successful, t('File::seek() won\'t seek passed the end of the file if direct not to.'));
+    $this->assert(!$successful, t('File::seek() won\'t seek past the end of the file if directed not to.'));
   }
 
 }

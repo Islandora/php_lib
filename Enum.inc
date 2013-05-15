@@ -44,7 +44,7 @@ abstract class Enum {
       }
       else {
         $class_name = get_class($this);
-        throw new InvalidArgumentException("No value provided, and no __default value defined for the Class '{$class_name}'.");
+        throw new InvalidArgumentException("No value provided, and no __default value defined for the class '{$class_name}'.");
       }
     }
     elseif (array_search($value, $consts) !== FALSE) {
