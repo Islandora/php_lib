@@ -1,7 +1,7 @@
 name = PHP Lib
 description = A collection of interfaces classes and functions that can be used in a variety of environments.
 
-version = 7.x-dev
+version = 7.x-1.10RC1
 package = Islandora Dependencies
 core = 7.x
 php = 5.2
