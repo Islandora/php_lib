@@ -2,7 +2,8 @@
 
 ## Introduction
 
-PHP Lib is a collection (or 'library') of interfaces, classes and functions that are used by a variety of Islandora modules, most notably the Forms modules. It is used primarily to create pages that convert records in XML formats to a more human-readable version that is also able to be easily manipulated. This is done by a series of PHP files that Drupal includes when loading these pages.
+PHP Lib is a collection (or 'library') of interfaces, classes and functions that are required by a variety of Islandora modules, most notably the Forms modules. It is used primarily to create pages that convert records in XML formats to a more human-readable version that is also able to be easily manipulated. This is done by a series of PHP files that Drupal includes when loading these pages.
+
 
 ## Requirements
 
@@ -10,7 +11,10 @@ N/A
 
 ## Installation
 
-Install as usual, see [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
+Despite being a library, php_lib is packaged as a Drupal module.
+It should be installed in the modules folder and enabled as a module.
+
+See [this](https://drupal.org/documentation/install/modules-themes/modules-7) for further information.
 
 ## Configuration
 
