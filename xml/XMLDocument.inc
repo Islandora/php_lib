@@ -226,7 +226,7 @@ class _XMLDocument extends DOMDocument {
   /**
    * Removed function.
    */
-  public function loadHTMLFile($filename) {
+  public function loadHTMLFile($filename, $options = NULL) {
     throw new Exception(__FUNCTION__ . ' is not supported.');
   }
 
